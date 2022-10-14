@@ -1,0 +1,10 @@
+Here is the command used to generate our electron nativefier wrapper executable.
+NOTE: you will notice that we are not using a file anymore to host the site, it will have to be hosted online and accessed through the client / browser
+this has it's upsides and downsides
+upside means we will only have to compile this application when we want to change the name / icon etc., and never again
+downside means we have to have another github repository that clones our repository to host the website on, but that is not difficult and has already been taken care of in the command down below!
+
+
+
+
+nativefier https://heskitgel.github.io/project/index.html --background-color #ADD8E6 --name Untitled-Drawing-Game --disable-context-menu true --disable-dev-tools true --height 719 --width 1279 --max-height 720 --max-width 1280
