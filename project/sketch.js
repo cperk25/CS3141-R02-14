@@ -5,6 +5,7 @@
 let CANVAS_WIDTH = 1280;
 let CANVAS_HEIGHT = 720;
 let drawStart = false; // determines if home menu buttons have been pressed
+let FR = 200; // Framerate of our app, the higher the smoother our drawing
 let gameButton;
 let practiceButton;
 
@@ -24,7 +25,7 @@ function setup(){
 	// setup() is called once at the start of the script, 
 	// or when the webpage/client loads
 	createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-
+	frameRate(FR);
 	// draws background of hex code #ADD8E6
 	background(173, 216, 230);
 	
