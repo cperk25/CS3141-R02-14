@@ -10,7 +10,7 @@ var cl_clickables = [];
 //This function is what makes the magic happen and should be ran after
 //each draw cycle.
 p5.prototype.runGUI = function () {
-	for (var i = 0; i < cl_clickables.length; ++i) {
+	for (i = 0; i < cl_clickables.length; ++i) {
 		if (cl_lastHovered != cl_clickables[i])
 			cl_clickables[i].onOutside();
 	}
@@ -55,9 +55,9 @@ function getTextBounds(m, font, size) {
 }
 
 //Button Class
-function Clickable() {
-	this.x = 0;			//X position of the clickable
-	this.y = 0;			//Y position of the clickable
+function Clickable(x,y) {
+	this.x = x;			//X position of the clickable
+	this.y = y;			//Y position of the clickable
 	this.width = 100;		//Width of the clickable
 	this.height = 50;		//Height of the clickable
 	this.color = "#FFFFFF";		//Background color of the clickable
@@ -69,11 +69,22 @@ function Clickable() {
 	this.textSize = 12;		//Size for the text shown
 	this.textFont = "sans-serif";	//Font for the text shown
 	this.textScaled = false;     //Scale the text with the size of the clickable
+	
+	// image options
+	this.image = null; // image object from p5loadimage()
+	this.fitImage = false; // when true, image will stretch to fill button
+	this.imageScale = 1.0;
+	this.tint = null; // tint image using color
+	this.noTint = true; // default to disable tinting
+	this.filter = null; // filter effect
 
 	this.updateTextSize = function () {
 		if (this.textScaled) {
 			for (let i = this.height; i > 0; i--) {
-				if (getTextBounds(this.text, this.textFont, i)[0] <= this.width && getTextBounds(this.text, this.textFont, i)[1] <= this.height) {
+				if (getTextBounds(this.text, this.textFont, i)[0] <= this.width
+					&& getTextBounds(this.text, this.textFont, i)[1] <= this.height) {
+					console.log("textbounds: " + getTextBounds(this.text, this.font, i));
+					console.log("boxsize: " + this.width + ", " + this.height);
 					this.textSize = i / 2;
 					break;
 				}
@@ -98,7 +109,7 @@ function Clickable() {
 	this.onRelease = function () {
 		//This function is ran when the cursor was pressed and then
 		//released inside the clickable. If it was pressed inside and
-		//then released outside this won't work.
+		//then released outside this won't run.
 	}
 
 	this.locate = function (x, y) {
@@ -112,14 +123,50 @@ function Clickable() {
 		this.updateTextSize();
 	}
 
-	this.draw = function () {
+	this.drawImage = function(){
+		push();
+		imageMode(CENTER);
+		let centerX = this.x + this.width / 2;
+		let centerY = this.y + this.height / 2;
+		let imgWidth = this.width;
+		let imgHeight = this.height;
+		if(this.fitImage){
+			let imageAspect = this.image.width / this.image.height;
+			let buttonAspect = this.width / this.height;
+			if(imageAspect > buttonAspect){ // image is wider than button
+				imgWidth = this.width;
+				imgHeight = this.height * (buttonAspect / imageAspect);
+			}
+			else{
+				imgWidth = this.width * (imageAspect / buttonAspect);
+				imgHeight = this.height;
+			}
+		}
+		
+		image(this.image, centerX, centerY, imgWidth * this.imageScale, imgHeight * this.imageScale);
 
+		if(this.tint && !this.noTint){
+			tint(this.tint)
+		} else {
+			noTint();
+		}
+		if(this.filter){
+			filter(this.filter);
+		}
+		pop();
+	}
+
+	this.draw = function () {
+		push();
 		fill(this.color);
 		stroke(this.stroke);
 		strokeWeight(this.strokeWeight);
 		rect(this.x, this.y, this.width, this.height, this.cornerRadius);
 		fill(this.textColor);
 		noStroke();
+		if(this.image){
+			this.drawImage();
+		}
 		textAlign(CENTER, CENTER);
 		textSize(this.textSize);
 		textFont(this.textFont);
@@ -130,6 +177,7 @@ function Clickable() {
 			if (mouseIsPressed && !cl_mouseWasPressed)
 				cl_lastClicked = this;
 		}
+		pop();
 	}
 
 	cl_clickables.push(this);
