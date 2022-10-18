@@ -20,8 +20,8 @@ function preload(){
 	// temporary UI bar asset is loaded on the website repository
 	// this is where we would preload all image assets
 	ui_colorbar = loadImage('https://heskitgel.github.io/project/assets/colorBar.jpg');
-	ui_timer = loadImage('https://ellie-sackrider.github.io/project/assets/timer.jpg');
-	ui_toolbar = loadImage('https://ellie-sackrider.github.io/project/assets/tools.jpg');
+	ui_timer = loadImage('https://heskitgel.github.io/project/assets/timer.jpg');
+	ui_toolbar = loadImage('https://heskitgel.github.io/project/assets/tools.jpg');
 }
 
 function setup(){
@@ -56,7 +56,7 @@ function setup(){
 
 function draw() {
 	// don't want users to be able to draw on the home page
-	if (gameStart === false & practiceStart === false)
+	if (gameStart === false && practiceStart === false)
 	{
 		// add buttons to the canvas
 		gameButton.draw();
