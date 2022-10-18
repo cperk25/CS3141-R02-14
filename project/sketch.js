@@ -4,10 +4,11 @@
 // CONSTANTS
 let CANVAS_WIDTH = 1280;
 let CANVAS_HEIGHT = 720;
-let drawStart = false; // determines if home menu buttons have been pressed
 let FR = 200; // Framerate of our app, the higher the smoother our drawing
 let gameButton;
 let practiceButton;
+let gameStart = false; // determines if home menu buttons have been pressed
+let practiceStart = false; // determines if practice button was pressed
 
 // variables
 let ui_colorbar;
@@ -19,6 +20,8 @@ function preload(){
 	// temporary UI bar asset is loaded on the website repository
 	// this is where we would preload all image assets
 	ui_colorbar = loadImage('https://heskitgel.github.io/project/assets/colorBar.jpg');
+	ui_timer = loadImage('https://ellie-sackrider.github.io/project/assets/timer.jpg');
+	ui_toolbar = loadImage('https://ellie-sackrider.github.io/project/assets/tools.jpg');
 }
 
 function setup(){
@@ -36,8 +39,8 @@ function setup(){
 	gameButton.text = "Play Game"; // text on the button
 	// when button is pressed, hide it and bring up the drawing canvas
 	gameButton.onRelease = function(){
-		drawStart = true;
-		//buttonHide();
+		gameStart = true;
+		background(173, 216, 230);
 	}
 	
 	// go to practice mode
@@ -46,20 +49,14 @@ function setup(){
 	practiceButton.text = "Practice"; // text on the button
 	// when button is pressed, hide it and bring up the drawing canvas
 	practiceButton.onRelease = function(){
-		drawStart = true;
-		//buttonHide();
+		practiceStart = true;
+		background(173, 216, 230);
 	}
-}
-
-function buttonHide() {
-	// remove buttons from the canvas
-	gameButton.hide();
-	practiceButton.hide();
 }
 
 function draw() {
 	// don't want users to be able to draw on the home page
-	if (drawStart === false)
+	if (gameStart === false & practiceStart === false)
 	{
 		// add buttons to the canvas
 		gameButton.draw();
@@ -68,10 +65,15 @@ function draw() {
 	
 	// draw() is called every frame, think of it as our main() method
 	// order matters!
-
 	// no longer on the home page; add drawing elements
-	else if (drawStart)
-	{
+	else
+	{	
+		if (gameStart === true)
+		{
+			image(ui_timer, 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8));
+			image(ui_toolbar, (CANVAS_WIDTH/4), 0, (CANVAS_WIDTH/5), (CANVAS_HEIGHT/8));
+		}
+
 		// displays our temporary UI art for our color selection bar
 		// first is the image variable, then the x position, y position,
 		// and then the width and height
