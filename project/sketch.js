@@ -90,7 +90,7 @@ function draw() {
 		textSize(100);
 		textFont("helvetica");
 		textAlign(CENTER);
-		text('Speed Draw ✏️', CANVAS_WIDTH/2, CANVAS_HEIGHT/3);
+		text('Quick Draw ✏️', CANVAS_WIDTH/2, CANVAS_HEIGHT/3);
 	}
 	
 	// draw() is called every frame, think of it as our main() method
