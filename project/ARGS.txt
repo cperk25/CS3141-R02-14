@@ -7,4 +7,4 @@ downside means we have to have another github repository that clones our reposit
 
 
 
-nativefier https://heskitgel.github.io/project/index.html --background-color #ADD8E6 --name Untitled-Drawing-Game --disable-context-menu true --disable-dev-tools true --clear-cache true --height 719 --width 1279 --max-height 720 --max-width 1280
+nativefier https://heskitgel.github.io/project/index.html --background-color #ADD8E6 --name Quick-Draw --disable-context-menu true --disable-dev-tools true --clear-cache true --height 719 --width 1279 --max-height 720 --max-width 1280
