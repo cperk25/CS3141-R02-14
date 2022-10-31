@@ -275,10 +275,11 @@ function draw() {
 		// places our color UI halfway across the X and 1/8th across the Y
 		
 		// sample drawing code
-		if (mouseIsPressed && mouseY >= 100){ //can't draw above the tool bars
+		if (mouseIsPressed === true && mouseY >= 100 && pmouseY >= 100){ //can't draw above the tool bars
 			stroke(currentColor); //sets radius of dot to the current color
-			fill(currentColor); //sets inside of dot to the current color
-			ellipse(mouseX, mouseY, 15, 15);
+			//fill(currentColor); //sets inside of dot to the current color
+			strokeWeight(15);
+			line(mouseX, mouseY, pmouseX, pmouseY);
 		}else{
 			fill(255);
 		}
