@@ -276,6 +276,25 @@ function setup(){
 	brownButton.onPress = function(){
 		currentColor = "brown"; //change brush color to brown
 	}
+
+	backButton = new Clickable(); // back button to return back to main menu
+	backButton.resize(CANVAS_WIDTH/10, CANVAS_HEIGHT/8);
+	backButton.locate(((CANVAS_WIDTH/10)), 0) // position it next to our temporary timer with a padding of 10px
+	backButton.text = "Back";
+	backButton.textSize = 20;
+
+	backButton.onOutside = function(){
+		backButton.color = "#DBDBDB";
+	}
+
+	backButton.onHover = function(){
+		backButton.color = "#B5B5B5";
+	}
+
+	backButton.onRelease = function(){
+		gameStart = false;
+		practiceStart = false;
+	}
 }
 
 function draw() {
@@ -289,6 +308,9 @@ function draw() {
 		practiceButton.draw();
 		
 		// add text to home page displaying the name of the game
+		stroke("black");
+		strokeWeight(1);
+		fill(0, 0, 0)
 		textSize(100);
 		textFont("helvetica");
 		textAlign(CENTER);
@@ -313,6 +335,9 @@ function draw() {
 		{
 			image(ui_timer, 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8)); //temporary UI
 		}
+
+		// add in back button
+		backButton.draw();
 
 		// add line size buttons
 		sizeIncrease.draw();
