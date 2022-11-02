@@ -21,11 +21,9 @@ function preload(){
 	// preload() is called before the start of the script,
 	// in order to load things in advance
 
-	// temporary UI bar asset is loaded on the website repository
-	// this is where we would preload all image assets
-	
+	// this is where we would preload all image assets	
 	ui_timer = loadImage('https://heskitgel.github.io/project/assets/timer.jpg');
-	ui_toolbar = loadImage('https://heskitgel.github.io/project/assets/tools.jpg');
+	home_background = loadImage('https://heskitgel.github.io/project/assets/home_background.jpg');
 }
 
 function setup(){
@@ -40,7 +38,7 @@ function setup(){
 	// play drawing game
 	gameButton = new Clickable(); // create button
 	gameButton.resize(150, 75);
-	gameButton.locate(CANVAS_WIDTH/4, (CANVAS_HEIGHT*2)/3); // position button
+	gameButton.locate(CANVAS_WIDTH*0.3, CANVAS_HEIGHT*0.6); // position button
 	gameButton.text = "Play Game"; // text on the button
 	gameButton.textSize = 20;
 	
@@ -63,7 +61,7 @@ function setup(){
 	// practice drawing mode
 	practiceButton = new Clickable(); // create button
 	practiceButton.resize(150, 75);
-	practiceButton.locate(CANVAS_WIDTH*0.60, (CANVAS_HEIGHT*2)/3); // position button
+	practiceButton.locate(CANVAS_WIDTH*0.55, CANVAS_HEIGHT*0.6); // position button
 	practiceButton.text = "Practice"; // text on the button
 	practiceButton.textSize = 20;
 	
@@ -85,9 +83,10 @@ function setup(){
 	
 	// increase line size by pressing button
 	sizeIncrease = new Clickable();
-	sizeIncrease.resize(50, 25);
-	sizeIncrease.locate(CANVAS_WIDTH-500, 25);
+	sizeIncrease.resize(50, 40);
+	sizeIncrease.locate(CANVAS_WIDTH-500, 10);
 	sizeIncrease.text = "↑";
+	sizeIncrease.textSize = 20;
 	sizeIncrease.onPress = function(){
 		if (lineSize < 100)
 		{
@@ -106,9 +105,10 @@ function setup(){
 	
 	// decrease line size by pressing button
 	sizeDecrease = new Clickable();
-	sizeDecrease.resize(50, 25);
+	sizeDecrease.resize(50, 40);
 	sizeDecrease.locate(CANVAS_WIDTH-500, 50);
 	sizeDecrease.text = "↓";
+	sizeDecrease.textSize = 20;
 	sizeDecrease.onPress = function(){
 		if (lineSize > 5)
 		{
@@ -282,6 +282,8 @@ function draw() {
 	// don't want users to be able to draw on the home page
 	if (gameStart === false && practiceStart === false)
 	{
+		image(home_background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); //adds background image to home page
+		
 		// add buttons to the canvas
 		gameButton.draw();
 		practiceButton.draw();
@@ -290,14 +292,23 @@ function draw() {
 		textSize(100);
 		textFont("helvetica");
 		textAlign(CENTER);
-		text('Quick Draw ✏️', CANVAS_WIDTH/2, CANVAS_HEIGHT/3);
+		text('Quick Draw ✏️', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 30);
 	}
 	
 	// draw() is called every frame, think of it as our main() method
 	// order matters!
 	// no longer on the home page; add drawing elements
 	else
-	{	
+	{
+		// drawing code
+		if (mouseIsPressed === true && mouseY >= 100 && pmouseY >= 100){ //can't draw above the tool bars
+			stroke(currentColor); //sets color of the line to the current color
+			strokeWeight(lineSize); //width of the line drawn
+			line(mouseX, mouseY, pmouseX, pmouseY);
+		}else{
+			fill(255);
+		}
+		
 		if (gameStart === true) //starting the game mode adds in a timer
 		{
 			image(ui_timer, 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8)); //temporary UI
@@ -326,14 +337,5 @@ function draw() {
 		lightpinkButton.draw();
 		fuchsiaButton.draw();
 		brownButton.draw();
-		
-		// drawing code
-		if (mouseIsPressed === true && mouseY >= 100 && pmouseY >= 100){ //can't draw above the tool bars
-			stroke(currentColor); //sets color of the line to the current color
-			strokeWeight(lineSize); //width of the line drawn
-			line(mouseX, mouseY, pmouseX, pmouseY);
-		}else{
-			fill(255);
-		}
 	}
 }
