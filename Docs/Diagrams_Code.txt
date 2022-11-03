@@ -59,28 +59,21 @@ Pictionary --|> Buttons : Branch Button
 ####Sequence Diagram####
 @startuml
 actor Users as user
-participant UI as ui
+participant "User Interface" as ui
 participant Buttons as b
-participant Settings as set
 participant "Main Menu" as mm
-participant Pen as pen
-participant Canvas as c
+participant "Free Draw" as fd
+participant "Save Image" as si
+participant "Drawing Window" as dw
+participant Pictionary as p
 
 user -> ui: Interacts with
-ui -> user: Timer, Win/Lose
-
-b -> ui: Apart of
-mm -> set: Effects
-
-user -> b: Uses
-b-> set: Sets Game setting (Free Draw or Game Mode)
-
-user -> user: Plays: Single or Multiplayer
-
-b -> pen: Set Color, Transparency, Size
-b -> c: Download canvas
-
-user -> pen: Uses tool
-pen -> c: Draws on 
-
+user -> b: Interacts with
+p -> b: Uses
+b -> fd: Send to
+b -> si: Does
+b -> ui: Always displayed
+mm -> ui: Apart of
+dw -> ui: Apart of
+user -> user: Multiplayer
 @enduml
