@@ -1,5 +1,27 @@
 ####Usecase Diagram####
+@startuml
+left to right direction
+actor Players as p1
+actor Player2 as p2
 
+Players --|> p2
+
+package Draw_UI{
+ usecase "User Interface" as ui
+ usecase Buttons as b
+ usecase "Main Menu" as mm
+ usecase "Free Draw" as fd
+ usecase "Save Image" as si
+ usecase "Drawing Window" as dw
+ usecase Pictionary as p
+
+ p1 -- ui: Interacts with
+ p1 -- b: Uses
+ p1 -- fd: Picks
+ p1 -- si: Can
+ p1 -- dw: Uses
+ p1 -- p: Plays
+@enduml
 
 #####Class Diagram####
 @startuml
