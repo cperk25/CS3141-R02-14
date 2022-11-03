@@ -1,0 +1,86 @@
+####Usecase Diagram####
+
+
+#####Class Diagram####
+@startuml
+class Pictionary{
+displayWord()
+startDrawing()
+startTimer()
+
+}
+
+class Buttons{
+exit()
+start()
+mainMenu()
+penSize()
+color()
+saveDrawing()
+}
+
+class "Drawing Window"{
+checkForInput()
+displayDrawing()
+}
+
+class "Free Draw"{
+enterDrawingPhase()
+}
+
+class "Main Menu"{
+waitForButtonPress()
+enterNextMode()
+}
+
+class "Save Image"{
+displaySaveWindow()
+collectFileName()
+saveImageToDevice()
+}
+
+class "User Interface"{
+deployDuringStartUp()
+close()
+}
+
+"Drawing Window" --* "User Interface" : subSection
+Buttons --* "User Interface" : Always Displayed
+"Save Image" --* Buttons
+"Drawing Window" --o "Free Draw"
+"Drawing Window" --o Pictionary
+"Main Menu" --* "User Interface" : Opening Screen
+Buttons --o "Main Menu"
+"Free Draw" --|> Buttons : Branch Button
+Pictionary --|> Buttons : Branch Button
+
+@enduml
+
+####Sequence Diagram####
+@startuml
+actor Users as user
+participant UI as ui
+participant Buttons as b
+participant Settings as set
+participant "Main Menu" as mm
+participant Pen as pen
+participant Canvas as c
+
+user -> ui: Interacts with
+ui -> user: Timer, Win/Lose
+
+b -> ui: Apart of
+mm -> set: Effects
+
+user -> b: Uses
+b-> set: Sets Game setting (Free Draw or Game Mode)
+
+user -> user: Plays: Single or Multiplayer
+
+b -> pen: Set Color, Transparency, Size
+b -> c: Download canvas
+
+user -> pen: Uses tool
+pen -> c: Draws on 
+
+@enduml
