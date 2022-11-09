@@ -11,6 +11,8 @@ let FR = 200; // Framerate of our app, the higher the smoother our drawing
 let gameStart = false; // determines if home menu buttons have been pressed
 let practiceStart = false; // determines if practice button was pressed
 let currentOpacity = 100;
+let timer = 120;
+
 
 // Tracks current brush color; initialized to black
 var currentColor = "black";
@@ -23,8 +25,9 @@ function preload(){
 	// in order to load things in advance
 
 	// this is where we would preload all image assets	
-	ui_timer = loadImage('https://heskitgel.github.io/project/assets/timer.jpg');
+	//ui_timer = loadImage('https://heskitgel.github.io/project/assets/timer.jpg');
 	home_background = loadImage('https://heskitgel.github.io/project/assets/home_background.jpg');
+
 }
 
 function setup(){
@@ -400,7 +403,26 @@ function draw() {
 		
 		if (gameStart === true) //starting the game mode adds in a timer
 		{
-			image(ui_timer, 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8)); //temporary UI
+			if (frameCount % 60 == 0 && timer > 0) {	// if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+				timer--;
+			}
+			if (timer == 0) {	//Time runs out, can implement different actions
+				text("Time Done", CANVAS_WIDTH/2, CANVAS_HEIGHT*0.7);
+			}
+			//Create rectangle to hide old text and organize timer
+			stroke('black');
+			strokeWeight(1);
+			fill(255, 255, 255)
+			rect(0, 0, CANVAS_WIDTH/10, CANVAS_HEIGHT/8, 10)
+
+			//Displays number of seconds left 
+			stroke('black');
+			strokeWeight(1);
+			fill(0, 0, 0)
+			textSize(20);
+			textFont("helvetica");
+			textAlign(CENTER, CENTER);
+			text(timer , 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8));
 		}
 
 		// add in back button
