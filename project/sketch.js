@@ -1,33 +1,35 @@
 // we should declare functions and variables outside 
 // the scope of the main setup() and draw() functions here
 
-//import { WORDS } from "./words.js"; //array of word prompts to draw
-//let word = WORDS[Math.floor(Math.random() * WORDS.length]; // randomly chooses a prompt
-
 // CONSTANTS
-let CANVAS_WIDTH = 1280;
-let CANVAS_HEIGHT = 720;
-let FR = 200; // Framerate of our app, the higher the smoother our drawing
+const CANVAS_WIDTH = 1280;
+const CANVAS_HEIGHT = 720;
+const FR = 200; // Framerate of our app, the higher the smoother our drawing
+
+// Game mode variables
 let gameStart = false; // determines if home menu buttons have been pressed
 let practiceStart = false; // determines if practice button was pressed
-let currentOpacity = 100;
-let timer = 120;
+let timer = 30; //
 
+// Drawing tool variables
+let currentOpacity = 100; // Tracks current opacity; initialized to 100%
+let currentColor = "black"; // Tracks current brush color; initialized to black
+let lineSize = 15; // Tracks current line size in pixels; initialized to 15
 
-// Tracks current brush color; initialized to black
-var currentColor = "black";
+// Word list variables
+let word = []; // list of words from the given text file
+let index; // tracks index of currently selected word
 
-// Tracks current line size in pixels; initialized to 15
-var lineSize = 15;
+/* Takes in the text file data and stores it in an array */
+function doText(data) {
+	word = data;
+}
 
 function preload(){
 	// preload() is called before the start of the script,
 	// in order to load things in advance
 
-	// this is where we would preload all image assets	
-	//ui_timer = loadImage('https://heskitgel.github.io/project/assets/timer.jpg');
-	home_background = loadImage('https://heskitgel.github.io/project/assets/home_background.jpg');
-
+	home_background = loadImage('https://heskitgel.github.io/project/assets/home_background.jpg'); // preload the background image
 }
 
 function setup(){
@@ -35,8 +37,9 @@ function setup(){
 	// or when the webpage/client loads
 	createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 	frameRate(FR);
-	// draws background of hex code #ADD8E6
-	background(173, 216, 230);
+	background(173, 216, 230);// draws background of hex code #ADD8E6
+	
+	loadStrings('https://heskitgel.github.io/project/words.txt', doText); // calls the doText function
 	
 	/* home screen buttons */
 	// play drawing game
@@ -106,25 +109,21 @@ function setup(){
 		opacityIncrease.color = "#B5B5B5";
 	}
 
-	displayOpacity = new Clickable();
-	displayOpacity.resize(100, 100);
-	displayOpacity.locate((CANVAS_WIDTH/5) + 100, 0);
-	displayOpacity.textSize = 30;
-	displayOpacity.text = currentOpacity + "%";
-
+	// button that decreases color opacity when clicked
 	opacityDecrease = new Clickable();
 	opacityDecrease.resize(50, 40);
 	opacityDecrease.locate(((CANVAS_WIDTH/5) + 200), 50);
 	opacityDecrease.text = "↓";
 	opacityDecrease.textSize = 20;
 	opacityDecrease.onPress = function(){
-		if (currentOpacity > 5)
+		if (currentOpacity > 5) // prevents opacity from going below 5
 		{
 			currentOpacity-=5;
 			displayOpacity.text = currentOpacity + "%";
 			currentColor = setOpacity(currentColor, currentOpacity);
 		}
 	}
+	
 	// set normal button color
 	opacityDecrease.onOutside = function(){
 		opacityDecrease.color = "#DBDBDB";
@@ -133,6 +132,14 @@ function setup(){
 	opacityDecrease.onHover = function(){
 		opacityDecrease.color = "#B5B5B5";
 	}
+	
+	// text box diplaying current opacity
+	displayOpacity = new Clickable();
+	displayOpacity.resize(100, 100);
+	displayOpacity.locate((CANVAS_WIDTH/5) + 100, 0);
+	displayOpacity.textSize = 30;
+	displayOpacity.text = currentOpacity + "%";
+	
 
 	// increase line size by pressing button
 	sizeIncrease = new Clickable();
@@ -347,6 +354,7 @@ function setup(){
 		currentColor = setOpacity(currentColor, currentOpacity);
 	}
 
+	/* Back button */
 	backButton = new Clickable(); // back button to return back to main menu
 	backButton.resize(CANVAS_WIDTH/10, CANVAS_HEIGHT/8);
 	backButton.locate(((CANVAS_WIDTH/10)), 0) // position it next to our temporary timer 
@@ -362,13 +370,22 @@ function setup(){
 	}
 
 	backButton.onRelease = function(){
+		// reset tool and game variables
 		gameStart = false;
 		practiceStart = false;
+		timer = 30;
+		currentColor = "black";
+		currentOpacity = 100;
+		displayOpacity.text = currentOpacity + "%";
+		lineSize = 15;
+		displaySize.text = lineSize + "px";
 	}
 }
 
+// draw() is called every frame, think of it as our main() method
+// order matters!
 function draw() {
-	// don't want users to be able to draw on the home page
+	// draws the main menu screen
 	if (gameStart === false && practiceStart === false)
 	{
 		image(home_background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); //adds background image to home page
@@ -385,44 +402,54 @@ function draw() {
 		textFont("helvetica");
 		textAlign(CENTER);
 		text('Quick Draw ✏️', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 - 30);
+		
+		// randomly selects index of word to draw
+		index = [Math.floor(Math.random() * word.length)];
 	}
 	
-	// draw() is called every frame, think of it as our main() method
-	// order matters!
-	// no longer on the home page; add drawing elements
+	// draws the gamemode screens
 	else
 	{
 		// drawing code
-		if (mouseIsPressed === true && mouseY >= 100 && pmouseY >= 100){ //can't draw above the tool bars
+		if (mouseIsPressed === true && mouseY >= 100 && pmouseY >= 100 && timer > 0){ //can't draw above the tool bars or when time runs out
 			stroke(currentColor); //sets color of the line to the current color
 			strokeWeight(lineSize); //width of the line drawn
 			line(mouseX, mouseY, pmouseX, pmouseY);
-		}else{
-			fill(255);
 		}
 		
-		if (gameStart === true) //starting the game mode adds in a timer
+		if (gameStart === true) //starting the game mode
 		{
-			if (frameCount % 60 == 0 && timer > 0) {	// if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+			// Displays the randomly selected word
+			stroke('black');
+			strokeWeight(1);
+			fill('red')
+			textSize(40);
+			textAlign(LEFT, CENTER);
+			text("Your word is: " + word[index], 40, CANVAS_HEIGHT-60); // display the drawing prompt
+			
+			// Calculates current time based on number of frames passed
+			if (frameCount % 50 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
 				timer--;
 			}
-			if (timer == 0) {	//Time runs out, can implement different actions
-				text("Time Done", CANVAS_WIDTH/2, CANVAS_HEIGHT*0.7);
+			if (timer == 0) { //Time runs out, can implement different actions
+				textAlign(CENTER, CENTER);
+				text("Time's Up", CANVAS_WIDTH/2, CANVAS_HEIGHT*0.7);
 			}
-			//Create rectangle to hide old text and organize timer
+			
+			// Create rectangle to hide old text and organize timer
 			stroke('black');
 			strokeWeight(1);
 			fill(255, 255, 255)
 			rect(0, 0, CANVAS_WIDTH/10, CANVAS_HEIGHT/8, 10)
 
-			//Displays number of seconds left 
+			// Displays number of seconds left 
 			stroke('black');
 			strokeWeight(1);
 			fill(0, 0, 0)
 			textSize(20);
 			textFont("helvetica");
 			textAlign(CENTER, CENTER);
-			text(timer , 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8));
+			text(timer, 0, 0, (CANVAS_WIDTH/10), (CANVAS_HEIGHT/8));
 		}
 
 		// add in back button
