@@ -11,7 +11,7 @@ let CANVAS; // predefining our canvas var
 // Game mode variables
 let gameStart = false; // determines if home menu buttons have been pressed
 let practiceStart = false; // determines if practice button was pressed
-let timer = 60; // time given to draw a picture
+let timer = 30; // time given to draw a picture
 
 // Drawing tool variables
 let currentOpacity = 100; // Tracks current opacity; initialized to 100%
@@ -453,7 +453,7 @@ function draw() {
 			}
 			if (timer == 0) { //Time runs out, can implement different actions
 				textAlign(CENTER, CENTER);
-				text("Time's Up", CANVAS_WIDTH/2, CANVAS_HEIGHT*0.7);
+				text("Time's Up", CANVAS_WIDTH/2, CANVAS_HEIGHT-60);
 			}
 			
 			// Create rectangle to hide old text and organize timer
@@ -474,6 +474,9 @@ function draw() {
 
 		// add in back button
 		backButton.draw();
+
+		// add in save button
+		saveButton.draw();
 
 		// add line size buttons
 		sizeIncrease.draw();
@@ -518,5 +521,5 @@ function setOpacity(inputColor, opacityPercent){
 }
 
 function saveCanvas(){
-	save(CANVAS, "Image.png");
+	save(CANVAS, "image.png");
 }
