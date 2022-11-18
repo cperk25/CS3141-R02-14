@@ -4,7 +4,9 @@
 // CONSTANTS
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
-const FR = 200; // Framerate of our app, the higher the smoother our drawing
+const FR = 60; // Framerate of our app, the higher the smoother our drawing
+
+let CANVAS; // predefining our canvas var
 
 // Game mode variables
 let gameStart = false; // determines if home menu buttons have been pressed
@@ -35,7 +37,7 @@ function preload(){
 function setup(){
 	// setup() is called once at the start of the script, 
 	// or when the webpage/client loads
-	createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+	CANVAS = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 	frameRate(FR);
 	background(173, 216, 230);// draws background of hex code #ADD8E6
 	
@@ -380,6 +382,24 @@ function setup(){
 		lineSize = 15;
 		displaySize.text = lineSize + "px";
 	}
+
+	saveButton = new Clickable();
+	saveButton.resize(CANVAS_WIDTH/10, CANVAS_HEIGHT/8);
+	saveButton.locate((CANVAS_WIDTH-(CANVAS_WIDTH/10)), (CANVAS_HEIGHT-(CANVAS_HEIGHT/8)));
+	saveButton.text = "Save";
+	saveButton.textSize = 20;
+
+	saveButton.onOutside = function(){
+		saveButton.color = "#DBDBDB";
+	}
+
+	saveButton.onHover = function(){
+		saveButton.color = "#B5B5B5";
+	}
+
+	saveButton.onRelease = function(){
+		saveCanvas();
+	}
 }
 
 // draw() is called every frame, think of it as our main() method
@@ -495,4 +515,8 @@ function setOpacity(inputColor, opacityPercent){
 	console.log("a = " + a);
 	let returnColor = color(r, g, b, a);
 	return returnColor;
+}
+
+function saveCanvas(){
+	save(CANVAS, "Image.png");
 }
