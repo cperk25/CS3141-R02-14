@@ -10,3 +10,32 @@ bottle
 shoe
 lamp
 fan
+strawberry
+eclipse
+chandelier
+ketchup
+toothpaste
+rainbow
+bunk bed
+boardgame
+beehive
+lemon
+wreath
+waffles
+bubble
+whistle
+snowball
+bouquet
+headphones
+fireworks
+igloo
+ferris wheel
+banana peel
+lawnmower
+summer
+whisk
+cupcake
+sleeping bag
+cloud
+crust
+battery
