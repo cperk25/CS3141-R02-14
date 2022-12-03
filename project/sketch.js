@@ -413,7 +413,7 @@ function setup() {
 	}
 
 	saveButton.onRelease = function () {
-		saveCanvas();
+		save(CANVAS, word[index], "png");
 	}
 }
 
@@ -557,8 +557,4 @@ function setOpacity(inputColor, opacityPercent) {
 	console.log("a = " + a);
 	let returnColor = color(r, g, b, a);
 	return returnColor;
-}
-
-function saveCanvas() {
-	save(CANVAS, "image.png");
 }
