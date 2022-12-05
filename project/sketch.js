@@ -27,6 +27,8 @@ let index; // tracks index of currently selected word
 let numPlayers = 2; // current number of players
 let playerScores = [0, 0]; // tracks the scores of all players in an array
 let playerTurn = 1; // tracks which player is currently drawing
+let totalRounds = 3*numPlayers; // total number of drawing rounds
+let currentRound = 0; // tracks the current round
 let guessedCorrect = false; // tracks if a player correctly guessed the word drawn within the time limit
 let pointsEarned = 0; // number of points granted for a correct guess (based on time remaining)
 
@@ -403,6 +405,13 @@ function setup() {
 		displayOpacity.text = currentOpacity + "%";
 		lineSize = 15;
 		displaySize.text = lineSize + "px";
+		
+		// reset scores and round number
+		playerScores[0] = 0;
+		playerScores[1] = 0;
+		currentRound = 0;
+		playerTurn = 1;
+		guessedCorrect = false;
 	}
 
 	/* Start game button */
@@ -470,20 +479,34 @@ function setup() {
 
 	continueButton.onRelease = function () {
 		// gameStart = true;
-		gameMode = 3;
+		
+		currentRound++;
+		if (currentRound >= totalRounds)
+		{
+			gameMode = 4; // results
+		}
+		else 
+		{
+			gameMode = 3;
+		}
+		
 		background(173, 216, 230);
 		
 		// randomly selects index of word to draw
 		index = [Math.floor(Math.random() * word.length)];
 		
-		guessedCorrect = false;
-		playerScores[playerTurn] += pointsEarned; // tracks the scores of all players in an array
-		playerTurn++; // tracks which player is currently drawing
+		if (guessedCorrect) // increment player score if guessed correctly
+		{
+			playerScores[playerTurn - 1] += pointsEarned; // tracks the scores of all players in an array
+		}
 		
-		if (playerTurn > numPlayers)
+		playerTurn++; // tracks which player is currently drawing
+		if (playerTurn > numPlayers) // loops between player 1 and 2
 		{
 			playerTurn = 1;
 		}
+		
+		guessedCorrect = false;
 	}
 	
 }
@@ -540,7 +563,7 @@ function game() {
 }
 
 /* Draws User Prompt */
-function prompt(){
+function prompt() {
 	// Displays the randomly selected word
 	stroke('black');
 	strokeWeight(1);
@@ -555,6 +578,22 @@ function prompt(){
 	backButton.draw();
 	// add in start button
 	startButton.draw();
+}
+
+/* Draws Results Page showing each user's scores */
+function results() {
+	// Displays the player scores
+	stroke('black');
+	strokeWeight(1);
+	fill('red');
+	textSize(40);
+	textAlign(LEFT, CENTER);
+	text("Player 1 score: " + playerScores[0], (CANVAS_WIDTH / 3) + 50, (CANVAS_HEIGHT / 3) + 50);
+	text("Player 2 score: " + playerScores[1], (CANVAS_WIDTH / 3) + 50, (CANVAS_HEIGHT / 3) + 100);
+	
+	// add in back button
+	backButton.locate((CANVAS_WIDTH / 2) - 50, (CANVAS_HEIGHT * 0.7));
+	backButton.draw();
 }
 
 /* Ends the drawing game session and calculates points earned if a player correctly the word prompt */
@@ -575,7 +614,7 @@ function draw() {
 	}
 
 	// draws the gamemode screens
-	else if (gameMode == 1 || gameMode == 2) {
+	else if (gameMode === 1 || gameMode === 2) {
 		// drawing code
 		// can't draw on the tool bar regions or after time runs out
 		if ((mouseIsPressed === true) && (mouseY >= 100) && (mouseY <= CANVAS_HEIGHT-100) && (pmouseY >= 100) && (pmouseY <= CANVAS_HEIGHT-100) && (timer > 0))
@@ -585,7 +624,7 @@ function draw() {
 			line(mouseX, mouseY, pmouseX, pmouseY);
 		}
 
-		if (gameMode == 1) //starting the game mode
+		if (gameMode === 1) //starting the game mode
 		{
 			game();
 			//keyPressed();
@@ -640,8 +679,13 @@ function draw() {
 		fuchsiaButton.draw();
 		brownButton.draw();
 	}
-	else {
-		prompt();
+	// Draws the word prompt screen
+	else if (gameMode === 3) {
+		prompt(); 
+	}
+	// Draws the results / score screen
+	else if (gameMode === 4) {
+		results();
 	}
 }
 
