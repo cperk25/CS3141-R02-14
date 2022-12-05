@@ -158,7 +158,7 @@ function setup() {
 	// increase line size by pressing button
 	sizeIncrease = new Clickable();
 	sizeIncrease.resize(50, 40);
-	sizeIncrease.locate(CANVAS_WIDTH - 500, 10);
+	sizeIncrease.locate(CANVAS_WIDTH - 600, 10);
 	sizeIncrease.text = "↑";
 	sizeIncrease.textSize = 20;
 	sizeIncrease.onPress = function () {
@@ -179,7 +179,7 @@ function setup() {
 	// decrease line size by pressing button
 	sizeDecrease = new Clickable();
 	sizeDecrease.resize(50, 40);
-	sizeDecrease.locate(CANVAS_WIDTH - 500, 50);
+	sizeDecrease.locate(CANVAS_WIDTH - 600, 50);
 	sizeDecrease.text = "↓";
 	sizeDecrease.textSize = 20;
 	sizeDecrease.onPress = function () {
@@ -200,7 +200,7 @@ function setup() {
 	// box displaying the current line weight
 	displaySize = new Clickable();
 	displaySize.resize(100, 100);
-	displaySize.locate(CANVAS_WIDTH - 600, 0);
+	displaySize.locate(CANVAS_WIDTH - 700, 0);
 	displaySize.textSize = 30;
 	displaySize.text = lineSize + "px";
 
@@ -364,6 +364,17 @@ function setup() {
 	brownButton.onPress = function () {
 		currentColor = "brown"; //change brush color to brown
 		currentColor = setOpacity(currentColor, currentOpacity);
+	}
+
+	eraserButton = new Clickable(); //Eraser
+	eraserButton.resize(100, 100);
+	eraserButton.locate(CANVAS_WIDTH - 500, 0);
+	eraserButton.text = "⌫";
+	eraserButton.textSize = 20;
+	eraserButton.color = "white";
+	eraserButton.onPress = function () {
+		currentColor = "#ADD8E6"; //change brush color to background
+		currentColor = setOpacity(currentColor, 100);
 	}
 
 	/* Back button */
@@ -606,6 +617,9 @@ function draw() {
 		displayOpacity.draw();
 		opacityIncrease.draw();
 		opacityDecrease.draw();
+
+		// add in eraser button
+		eraserButton.draw();
 
 		// add first row of color buttons
 		whiteButton.draw();
