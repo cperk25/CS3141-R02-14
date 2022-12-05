@@ -23,6 +23,13 @@ let lineSize = 15; // Tracks current line size in pixels; initialized to 15
 let word = []; // list of words from the given text file
 let index; // tracks index of currently selected word
 
+// Player variables
+let numPlayers = 2; // current number of players
+let playerScores = [0, 0]; // tracks the scores of all players in an array
+let playerTurn = 1; // tracks which player is currently drawing
+let guessedCorrect = false; // tracks if a player correctly guessed the word drawn within the time limit
+let pointsEarned = 0; // number of points granted for a correct guess (based on time remaining)
+
 /* Takes in the text file data and stores it in an array */
 function doText(data) {
 	word = data;
@@ -67,6 +74,8 @@ function setup() {
 		// gameStart = true;
 		gameMode = 3;
 		background(173, 216, 230);
+		// randomly selects index of word to draw
+		index = [Math.floor(Math.random() * word.length)];
 	}
 
 	// practice drawing mode
@@ -385,19 +394,36 @@ function setup() {
 		displaySize.text = lineSize + "px";
 	}
 
+	/* Start game button */
 	startButton = new Clickable();	//For prompt
 	startButton.resize(CANVAS_WIDTH / 10, CANVAS_HEIGHT / 8);
-	startButton.locate(((CANVAS_WIDTH / 2) + 100), (CANVAS_HEIGHT/ 3)); // position it next to our temporary timer 
+	startButton.locate((CANVAS_WIDTH * 0.57), (CANVAS_HEIGHT * 0.7)); // position it next to our temporary timer 
 	startButton.text = "Start";
 	startButton.textSize = 20;
+
+	startButton.onOutside = function () {
+		startButton.color = "#DBDBDB";
+	}
+
+	startButton.onHover = function () {
+		startButton.color = "#B5B5B5";
+	}
 
 	startButton.onRelease = function (){
 		gameStart = true;
 		gameMode = 1;
 		fill(173, 216, 230);
 		rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+		// reset tool and game variables
+		timer = 30;
+		currentColor = "black";
+		currentOpacity = 100;
+		displayOpacity.text = currentOpacity + "%";
+		lineSize = 15;
+		displaySize.text = lineSize + "px";
 	}
 
+	/* Save drawing button */
 	saveButton = new Clickable();
 	saveButton.resize(CANVAS_WIDTH / 10, CANVAS_HEIGHT / 8);
 	saveButton.locate((CANVAS_WIDTH - (CANVAS_WIDTH / 10)), (CANVAS_HEIGHT - (CANVAS_HEIGHT / 8)));
@@ -415,9 +441,43 @@ function setup() {
 	saveButton.onRelease = function () {
 		save(CANVAS, word[index], "png");
 	}
+	
+	/* Continue game button */
+	continueButton = new Clickable(); // takes you back to the prompt screen
+	continueButton.resize(CANVAS_WIDTH / 10, CANVAS_HEIGHT / 8);
+	continueButton.locate(0, (CANVAS_HEIGHT - (CANVAS_HEIGHT / 8)));
+	continueButton.text = "Continue";
+	continueButton.textSize = 20;
+	
+	continueButton.onOutside = function () {
+		continueButton.color = "#DBDBDB";
+	}
+
+	continueButton.onHover = function () {
+		continueButton.color = "#B5B5B5";
+	}
+
+	continueButton.onRelease = function () {
+		// gameStart = true;
+		gameMode = 3;
+		background(173, 216, 230);
+		
+		// randomly selects index of word to draw
+		index = [Math.floor(Math.random() * word.length)];
+		
+		guessedCorrect = false;
+		playerScores[playerTurn] += pointsEarned; // tracks the scores of all players in an array
+		playerTurn++; // tracks which player is currently drawing
+		
+		if (playerTurn > numPlayers)
+		{
+			playerTurn = 1;
+		}
+	}
+	
 }
 
-//Draws Home Page
+/* Draws Home Page */
 function home() {
 	image(home_background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); //adds background image to home page
 
@@ -433,12 +493,9 @@ function home() {
 	textFont("helvetica");
 	textAlign(CENTER);
 	text('Quick Draw ✏️', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 30);
-
-	// randomly selects index of word to draw
-	index = [Math.floor(Math.random() * word.length)];
 }
 
-// Draws Game Page 
+/* Draws Game Page */
 function game() {
 	if (gameStart){
 		// Calculates current time based on number of frames passed
@@ -446,8 +503,12 @@ function game() {
 			timer--;
 		}
 		if (timer == 0) { //Time runs out, can implement different actions
+			stroke('black');
+			strokeWeight(1);
+			fill('red');
+			textSize(30);
 			textAlign(CENTER, CENTER);
-			text("Time's Up", CANVAS_WIDTH / 2, CANVAS_HEIGHT - 60);
+			text("Time's Up", CANVAS_WIDTH / 2, CANVAS_HEIGHT - 50);
 		}
 	}
 	
@@ -467,22 +528,31 @@ function game() {
 	text(timer, 0, 0, (CANVAS_WIDTH / 10), (CANVAS_HEIGHT / 8));
 }
 
-// Draws User Prompt
+/* Draws User Prompt */
 function prompt(){
 	// Displays the randomly selected word
 	stroke('black');
 	strokeWeight(1);
-	fill('red')
+	fill('red');
 	textSize(40);
-	textAlign(LEFT, CENTER);
-	text("Your word is: " + word[index], (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 10)); // display the drawing prompt
+	textAlign(CENTER, CENTER);
+	text("Player " + playerTurn + "'s turn!", (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 3));
+	text("Your word is: " + word[index], (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 2)); // display the drawing prompt
 
 	// add in back button
-	backButton.locate(((CANVAS_WIDTH / 2) - 100), (CANVAS_HEIGHT/ 3));
+	backButton.locate((CANVAS_WIDTH / 3), (CANVAS_HEIGHT * 0.7));
 	backButton.draw();
 	// add in start button
 	startButton.draw();
+}
 
+/* Ends the drawing game session and calculates points earned if a player correctly the word prompt */
+function keyPressed() {
+	if (keyCode === ENTER && gameMode === 1 && timer > 0 && guessedCorrect === false)
+	{
+		guessedCorrect = true;
+		pointsEarned = Math.ceil((timer / 30) * 100);
+	}
 }
 
 // draw() is called every frame, think of it as our main() method
@@ -496,7 +566,9 @@ function draw() {
 	// draws the gamemode screens
 	else if (gameMode == 1 || gameMode == 2) {
 		// drawing code
-		if (mouseIsPressed === true && mouseY >= 100 && pmouseY >= 100 && timer > 0) { //can't draw above the tool bars or when time runs out
+		// can't draw on the tool bar regions or after time runs out
+		if ((mouseIsPressed === true) && (mouseY >= 100) && (mouseY <= CANVAS_HEIGHT-100) && (pmouseY >= 100) && (pmouseY <= CANVAS_HEIGHT-100) && (timer > 0))
+		{
 			stroke(currentColor); //sets color of the line to the current color
 			strokeWeight(lineSize); //width of the line drawn
 			line(mouseX, mouseY, pmouseX, pmouseY);
@@ -505,6 +577,17 @@ function draw() {
 		if (gameMode == 1) //starting the game mode
 		{
 			game();
+			//keyPressed();
+			if (guessedCorrect)
+			{
+				stroke('black');
+				strokeWeight(1);
+				fill('black');
+				textSize(20);
+				textAlign(CENTER, CENTER);
+				text("Player " + playerTurn + " earned " + pointsEarned + " points!", (CANVAS_WIDTH / 4), CANVAS_HEIGHT - 50);
+			}
+			continueButton.draw();
 		}
 
 		// add in back button
