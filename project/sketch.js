@@ -12,7 +12,8 @@ let CANVAS; // predefining our canvas var
 var gameMode = 0;	//determines the game mode and different screens 0->home, 1->game, 2->practice, 3->prompt
 let gameStart = false; // determines if start button has been pressed
 //let practiceStart = false; // determines if practice button was pressed
-let timer = 30; // time given to draw a picture
+let timer = 31; // time given to draw a picture (30 seconds, +1 to account for beginning second of timer when game start)
+let timerStarted = false;
 
 // Drawing tool variables
 let currentOpacity = 100; // Tracks current opacity; initialized to 100%
@@ -532,9 +533,16 @@ function home() {
 /* Draws Game Page */
 function game() {
 	if (gameStart){
-		// Calculates current time based on number of frames passed
-		if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-			timer--;
+		// Calculates current time based on time
+		if(timerStarted){
+			if((millis() - currentTime) > 1000){
+				timer--;
+				currentTime = millis();
+			}
+		}else if(!timerStarted){
+			currentTime = millis();
+			timerStarted = true;
+			console.log("started timer");
 		}
 		if (timer == 0) { //Time runs out, can implement different actions
 			stroke('black');
@@ -543,6 +551,7 @@ function game() {
 			textSize(30);
 			textAlign(CENTER, CENTER);
 			text("Time's Up", CANVAS_WIDTH / 2, CANVAS_HEIGHT - 50);
+			timerStarted = false;
 		}
 	}
 	
