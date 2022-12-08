@@ -105,6 +105,7 @@ function setup() {
 		background(173, 216, 230);
 	}
 
+	// button that increases color opacity when clicked
 	opacityIncrease = new Clickable();
 	opacityIncrease.resize(50, 40);
 	opacityIncrease.locate(((CANVAS_WIDTH / 5) + 200), 10);
@@ -479,22 +480,20 @@ function setup() {
 	}
 
 	continueButton.onRelease = function () {
-		// gameStart = true;
+		// randomly selects index of next word to draw
+		index = [Math.floor(Math.random() * word.length)];
 		
 		currentRound++;
-		if (currentRound >= totalRounds)
+		if (currentRound >= totalRounds) // if current round is the last round, go to the results page
 		{
 			gameMode = 4; // results
 		}
-		else 
+		else // if current round is less than the total rounds, continue to next drawing round
 		{
 			gameMode = 3;
 		}
 		
 		background(173, 216, 230);
-		
-		// randomly selects index of word to draw
-		index = [Math.floor(Math.random() * word.length)];
 		
 		if (guessedCorrect) // increment player score if guessed correctly
 		{
@@ -507,7 +506,7 @@ function setup() {
 			playerTurn = 1;
 		}
 		
-		guessedCorrect = false;
+		guessedCorrect = false; // reset variable to false for next round
 	}
 	
 }
@@ -577,10 +576,12 @@ function prompt() {
 	stroke('black');
 	strokeWeight(1);
 	fill('red');
-	textSize(40);
+	textSize(70);
 	textAlign(CENTER, CENTER);
-	text("Player " + playerTurn + "'s turn!", (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 3));
-	text("Your word is: " + word[index], (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 2)); // display the drawing prompt
+	text("Player " + playerTurn + "'s turn!", (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 3) - 50);
+	
+	textSize(40);
+	text("Your word is: " + word[index], (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 3) + 125); // display the drawing prompt
 
 	// add in back button
 	backButton.locate((CANVAS_WIDTH / 3), (CANVAS_HEIGHT * 0.7));
@@ -591,14 +592,39 @@ function prompt() {
 
 /* Draws Results Page showing each user's scores */
 function results() {
-	// Displays the player scores
 	stroke('black');
 	strokeWeight(1);
 	fill('red');
+	textSize(70);
+	textAlign(CENTER, CENTER);
+	
+	// Determine the winner
+	let winner = 1;
+	if (playerScores[1] > playerScores[0]) // if player 2's score is greater, they are the winner
+	{
+		winner = 2;
+	}
+	else if (playerScores[1] == playerScores[0]) // if scores are equal, there's a tie
+	{
+		winner = 0;
+	}
+	
+	// Display winner / tie results
+	if (winner > 0)
+	{
+		text("Player " + winner + " Wins!", (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 3) - 50);
+	}
+	else
+	{
+		text("Tied!", (CANVAS_WIDTH / 2), (CANVAS_HEIGHT / 3) - 50);
+	}
+	
+	// Displays the player scores
+	fill('black');
 	textSize(40);
 	textAlign(LEFT, CENTER);
-	text("Player 1 score: " + playerScores[0], (CANVAS_WIDTH / 3) + 50, (CANVAS_HEIGHT / 3) + 50);
-	text("Player 2 score: " + playerScores[1], (CANVAS_WIDTH / 3) + 50, (CANVAS_HEIGHT / 3) + 100);
+	text("Player 1 score: " + playerScores[0], (CANVAS_WIDTH / 3) + 50, (CANVAS_HEIGHT / 3) + 100);
+	text("Player 2 score: " + playerScores[1], (CANVAS_WIDTH / 3) + 50, (CANVAS_HEIGHT / 3) + 150);
 	
 	// add in back button
 	backButton.locate((CANVAS_WIDTH / 2) - 50, (CANVAS_HEIGHT * 0.7));
