@@ -611,6 +611,7 @@ function keyPressed() {
 	{
 		guessedCorrect = true;
 		pointsEarned = Math.ceil((timer / 30) * 100);
+		timer = 0;
 	}
 }
 
