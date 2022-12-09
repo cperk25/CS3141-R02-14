@@ -535,7 +535,9 @@ function game() {
 		// Calculates current time based on time
 		if(timerStarted){
 			if((millis() - currentTime) > 1000){
-				timer--;
+				if(timer > 0){
+					timer--;
+				}
 				currentTime = millis();
 			}
 		}else if(!timerStarted){
